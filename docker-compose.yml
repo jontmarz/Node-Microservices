@@ -32,10 +32,6 @@ services:
       - ./inventory-service:/app
     command: npm run dev
 
-networks:
-  default:
-    name: integration-network
-
   frontend:
     build:
       context: ./frontend
@@ -45,3 +41,7 @@ networks:
     depends_on:
       - product-service
       - inventory-service
+
+networks:
+  default:
+    name: integration-network

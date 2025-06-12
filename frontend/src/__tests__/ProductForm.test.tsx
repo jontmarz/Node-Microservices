@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import ProductForm from '../components/ProductForm';
 import * as api from '../services/api';
@@ -25,6 +26,8 @@ describe('ProductForm', () => {
       target: { value: '99.9' }
     });
     fireEvent.click(screen.getByText('Crear'));
-    expect(onCreatedMock).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(onCreatedMock).toHaveBeenCalled();
+    });
   });
 });
