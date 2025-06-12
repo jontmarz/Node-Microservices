@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+      - NODE_ENV=development
+      - INTERNAL_API_KEY=miclaveultrasecreta
+    volumes:
+      - ./product-service:/app
+    command: npm run dev
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    container_name: inventory-service
+    ports:
+      - '3002:3002'
+    depends_on:
+      - product-service
+    environment:
+      - PORT=3002
+      - NODE_ENV=development
+      - INTERNAL_API_KEY=miclaveultrasecreta
+      - PRODUCT_SERVICE_URL=http://product-service:3001/api
+    volumes:
+      - ./inventory-service:/app
+    command: npm run dev
+
+networks:
+  default:
+    name: integration-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - product-service
+      - inventory-service

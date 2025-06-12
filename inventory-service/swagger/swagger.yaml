@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: Inventory Service API
+  version: 1.0.0
+  description: API para gestión de inventario de productos
+servers:
+  - url: http://localhost:3002/api
+paths:
+  /inventario/{id}:
+    get:
+      summary: Consultar stock por producto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Cantidad disponible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryResponse'
+
+    patch:
+      summary: Actualizar stock
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+      responses:
+        204:
+          description: Actualización exitosa
+        400:
+          description: Error de validación
+
+components:
+  schemas:
+    InventoryRequest:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: inventario
+            attributes:
+              type: object
+              properties:
+                cantidad:
+                  type: integer
+    InventoryResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: inventario
+            id:
+              type: string
+            attributes:
+              type: object
+              properties:
+                cantidad:
+                  type: integer

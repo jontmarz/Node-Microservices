@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Product Service API
+  version: 1.0.0
+  description: API para gestión de productos con JSON:API
+servers:
+  - url: http://localhost:3001/api
+paths:
+  /productos:
+    post:
+      summary: Crear producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        201:
+          description: Producto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+
+    get:
+      summary: Listar productos
+      parameters:
+        - in: query
+          name: page[limit]
+          schema:
+            type: integer
+        - in: query
+          name: page[offset]
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+
+  /productos/{id}:
+    get:
+      summary: Obtener producto por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        404:
+          description: Producto no encontrado
+    patch:
+      summary: Actualizar producto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        200:
+          description: Producto actualizado
+    delete:
+      summary: Eliminar producto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Eliminado
+
+components:
+  schemas:
+    ProductRequest:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: producto
+            attributes:
+              $ref: '#/components/schemas/ProductAttributes'
+    ProductResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Product'
+    Product:
+      type: object
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/ProductAttributes'
+    ProductAttributes:
+      type: object
+      properties:
+        nombre:
+          type: string
+        precio:
+          type: number
